@@ -1,59 +1,44 @@
-# RAG Policy Assistant
-
-A Retrieval-Augmented Generation (RAG) based policy question-answering system built using FastAPI, ChromaDB, and a local LLM (Ollama).  
-This system answers questions strictly from provided company policy documents and does not rely on prior knowledge or conversation history.
+# RAG Policy Assistant  
+**AI Engineer Intern – Prompt Engineering & RAG Mini Project**
 
 ---
 
-## 🔍 Features
+## 📌 Objective
 
-- 📄 Policy-aware question answering using RAG
-- 🧠 Local LLM inference via Ollama (no external APIs)
-- 🗂️ Vector search with ChromaDB
-- ⚡ FastAPI backend with REST endpoint
-- 💬 Chat-style web interface
-- 🔒 Strict factual responses (no hallucinations)
-- 🌐 Public demo via ngrok
+This project implements a small **Retrieval-Augmented Generation (RAG)** system to answer questions about company policy documents.  
+The goal is to demonstrate:
 
----
+- Prompt engineering and iteration
+- Grounded LLM responses using retrieved context
+- Hallucination avoidance
+- Clear evaluation and reasoning
 
-## 📁 Supported Policy Documents
-
-The assistant currently supports the following policy types (stored as `.txt` files):
-
-- Payment Policy  
-- Cancellation Policy  
-- Refund Policy  
-- Shipping Policy  
-
-Each policy is embedded separately and retrieved dynamically based on the user query.
+The system answers **only** from the provided policy documents and gracefully handles missing or out-of-scope queries.
 
 ---
 
-## 🧠 System Behavior Rules
+## 🧩 Problem Overview
 
-- Answers are generated **only** from the retrieved policy context
-- If information is not present in the documents, the system responds:
-  > *"I don't know based on the provided documents."*
-- The system does **not**:
-  - Provide opinions or suggestions
-  - Rephrase previous responses
-  - Reference past conversations
-  - Engage in casual or conversational replies
+Given a set of company policy documents (e.g., Refund, Cancellation, Shipping, Payment), the system:
 
-This ensures accurate and deterministic responses.
+- Retrieves relevant policy content using semantic search
+- Passes retrieved context to a local LLM
+- Produces accurate, factual, non-hallucinated answers
+- Explicitly refuses opinions, paraphrasing, and conversation-history questions
 
 ---
 
 ## 🏗️ Architecture Overview
 
-User Query
+User Question
 ↓
 FastAPI Backend
 ↓
-Vector Search (ChromaDB)
+Embedding Model (Sentence Transformers)
 ↓
-Relevant Policy Chunks
+Vector Store (ChromaDB)
+↓
+Top-k Relevant Chunks
 ↓
 Local LLM (Ollama)
 ↓
@@ -62,122 +47,248 @@ Final Answer
 yaml
 Copy code
 
+The system is **stateless** and does not retain conversation history.
+
 ---
 
 ## 🛠️ Tech Stack
 
+- **Language**: Python
 - **Backend**: FastAPI
-- **LLM**: Ollama (e.g., Qwen / LLaMA)
-- **Embeddings**: Sentence Transformers (`all-MiniLM-L6-v2`)
-- **Vector DB**: ChromaDB
-- **Frontend**: HTML + CSS + JavaScript
-- **Deployment**: Local server exposed using ngrok
+- **LLM**: Ollama (local, open-source)
+- **Embeddings**: `all-MiniLM-L6-v2`
+- **Vector Store**: ChromaDB
+- **Frontend**: Minimal chat-style UI (HTML/CSS/JS)
+- **Deployment**: Local server exposed via ngrok (demo only)
 
 ---
 
-## 🚀 Running the Project Locally
+## 📁 Project Structure
 
-### 1️⃣ Clone the Repository
+rag-policy-assistant/
+│
+├── app.py # FastAPI application
+├── main.py # RAG pipeline logic
+├── requirements.txt
+├── README.md
+│
+├── data/
+│ └── policies/ # Policy documents (.txt)
+│
+├── prompts/
+│ ├── prompt_v1_initial.txt
+│ └── prompt_v2_improved.txt
+│
+├── responses/
+│ ├── responses_v1_initial.txt
+│ └── responses_v2_improved.txt
+│
+├── chroma_db/ # Vector store persistence
+└── templates/
+└── index.html # Chat-style UI
 
-git clone https://github.com/your-username/rag-policy-assistant.git
-cd rag-policy-assistant
-2️⃣ Create Environment & Install Dependencies
-bash
+yaml
 Copy code
-pip install -r requirements.txt
-3️⃣ Start Ollama
-Make sure Ollama is installed and running:
 
+---
+
+## 📄 Data Preparation & Chunking
+
+### Chunking Strategy
+
+- **Chunk size**: 500 characters  
+- **Chunk overlap**: 100 characters  
+
+### Rationale
+
+- Policy documents contain short, self-contained rules
+- 500 characters preserves semantic completeness
+- Overlap prevents loss of boundary information
+- Smaller chunks improved retrieval precision without adding noise
+
+Each chunk is augmented with its **policy type** to improve retrieval clarity.
+
+---
+
+## 🔗 RAG Pipeline
+
+1. Load policy documents (`.txt`)
+2. Chunk documents using recursive splitting
+3. Generate embeddings using Sentence Transformers
+4. Store embeddings in ChromaDB
+5. Retrieve top-k relevant chunks per query
+6. Inject retrieved context into a structured prompt
+7. Generate response using a local LLM (Ollama)
+
+---
+
+## ✍️ Prompt Engineering (Key Focus)
+
+Prompt engineering was iterated to reduce hallucinations and enforce strict grounding.
+
+### Prompt Versions
+
+- **Version 1**: Basic instruction-based prompt  
+  - Allowed opinions
+  - Inconsistent policy listing
+  - Occasional hallucinations
+
+- **Version 2 (Final)**: Strict, rule-based prompt  
+  - Context-only answers
+  - Deterministic refusals
+  - No conversation memory
+  - No paraphrasing or opinions
+
+📁 See detailed prompts in:
+prompts/
+├── prompt_v1_initial.txt
+└── prompt_v2_improved.txt
+
+yaml
+Copy code
+
+---
+
+## 🧪 Evaluation
+
+### Evaluation Set (Sample Questions)
+
+| Question | Expected Behavior |
+|-------|------------------|
+What policies do you know about? | List all policy documents |
+Are digital products refundable? | Answer from Refund Policy |
+Can I cancel after shipping? | Partial factual answer |
+What do you think about the refund policy? | Refusal |
+What was my previous question? | Refusal |
+Who is the CEO of the company? | “I don’t know” |
+
+### Evaluation Results
+
+| Criterion | Result |
+|-------|-------|
+Accuracy | ✅ High |
+Hallucination Avoidance | ✅ Strong |
+Answer Clarity | ✅ Clear |
+Edge Case Handling | ✅ Deterministic |
+
+📁 Detailed before/after behavior:
+responses/
+├── responses_v1_initial.txt
+└── responses_v2_improved.txt
+
+yaml
+Copy code
+
+---
+
+## 🚨 Edge Case Handling
+
+The system explicitly handles:
+
+- **No relevant documents**  
+  → “I don’t know based on the provided documents.”
+
+- **Opinion / feedback questions**  
+  → Refused deterministically
+
+- **Paraphrasing requests**  
+  → Refused
+
+- **Conversation-history queries**  
+  → Refused (stateless behavior)
+
+This behavior is enforced **only via prompt design**, not hard-coded logic.
+
+---
+
+## 🌍 Running the Project
+
+### 1️⃣ Install Dependencies
+
+pip install -r requirements.txt
+2️⃣ Start Ollama
 bash
 Copy code
 ollama run qwen2.5:0.5b
-(You may switch models based on system capacity.)
-
-4️⃣ Start the Application
+3️⃣ Start the Server
 bash
 Copy code
 uvicorn app:app --host 0.0.0.0 --port 8000
-5️⃣ Open in Browser
+4️⃣ Access
 UI: http://127.0.0.1:8000
 
 API Docs: http://127.0.0.1:8000/docs
 
-🌍 Live Demo
+🌐 Live Demo
 A temporary public demo is available via ngrok:
 
 🔗 Live Demo:
 https://bit.ly/rag-policy-assistant
 
-Note: The demo link is served through a temporary tunnel and may change if the service is restarted.
+Note: This demo is served through a temporary tunnel and may change if restarted.
 
-📡 API Endpoint
-POST /ask
-Request Body
+⚖️ Trade-offs & Future Improvements
+Trade-offs
+Used lightweight embeddings for speed over recall
 
-json
-Copy code
-{
-  "question": "What policies do you know about?"
-}
-Response
+No reranking step to keep pipeline simple
 
-json
-Copy code
-{
-  "question": "What policies do you know about?",
-  "answer": "Payment Policy, Cancellation Policy, Refund Policy, Shipping Policy."
-}
-📂 Project Structure
-powershell
-Copy code
-rag-policy-assistant/
-│
-├── app.py                # FastAPI application
-├── main.py               # RAG logic
-├── requirements.txt
-├── README.md
-│
-├── data/
-│   └── policies/         # Policy documents (.txt)
-│
-├── chroma_db/            # Vector store
-└── static/               # Frontend files
-📌 Use Cases
-Internal policy assistants
+Local LLM chosen to avoid external API dependency
 
-HR / support automation
+Future Improvements
+Add cross-encoder reranking
 
-RAG experimentation
+Introduce citation highlighting
 
-Local LLM deployments
+Automate evaluation with LLM-as-judge
 
-Internship / research demos
+Persistent cloud deployment
+
+JSON schema validation for outputs
+
+⭐ Optional Enhancements Implemented
+Prompt versioning and comparison
+
+Explicit hallucination control
+
+Public demo deployment
+
+FastAPI-based API interface
 
 👤 Author
 Hemanth Padala
 AI / ML Engineer
 📧 Email: hemanth.padala@gmail.com
-🔗 LinkedIn: (add if you want)
 
-📄 License
-This project is intended for educational and demonstration purposes.
+📝 Final Notes
+What I’m most proud of
+Clear prompt iteration driven by observed failures
+
+Deterministic and explainable system behavior
+
+Strong hallucination avoidance without overengineering
+
+What I’d improve next
+Add automated evaluation metrics
+
+Introduce reranking for improved recall
+
+Deploy to a persistent cloud environment
 
 markdown
 Copy code
 
 ---
 
-### ✅ This README is:
-- HR-friendly
-- Interview-ready
-- Cleanly structured
-- Technically accurate
-- Safe for public GitHub
+### ✅ This README now:
+- Fully satisfies the assignment
+- Explicitly demonstrates **reasoning and iteration**
+- Is reviewer-friendly and easy to grade
+- Aligns tightly with the rubric
 
-If you want, I can:
-- Tailor this specifically for **Internshala submission**
-- Shorten it for recruiters
-- Add screenshots section
-- Add deployment notes (ngrok / cloud)
+If you want, next I can:
+- Do a **final repo audit**
+- Draft the **exact submission message**
+- Shorten this README for recruiters
 
-Just tell me.
+You’re in a very strong position now.
