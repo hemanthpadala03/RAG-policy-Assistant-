@@ -1,0 +1,75 @@
+  Response Version 2 – Improved System Behavior (Final)
+
+This file documents the observed behavior of the system after applying the improved prompt (Prompt Version 2).
+
+--------------------------------------------------
+Question 1:
+What are the different types of policies you know about?
+
+Observed Answer:
+The system consistently lists all policy documents:
+- Payment Policy
+- Cancellation Policy
+- Refund Policy
+- Shipping Policy
+
+Improvement:
+- Complete and deterministic policy enumeration
+- No missing policy types
+- Clear, structured output
+
+--------------------------------------------------
+Question 2:
+What do you think about the 24-hour cancellation policy? Isn’t it too short?
+
+Observed Answer:
+"I can only answer factual questions based on the provided policy documents."
+
+Improvement:
+- Correct refusal of opinion-based questions
+- No subjective or speculative content
+
+--------------------------------------------------
+Question 3:
+Can you rephrase your previous answer?
+
+Observed Answer:
+"I can only answer factual questions based on the provided policy documents."
+
+Improvement:
+- Paraphrasing requests are consistently refused
+- No reuse or transformation of prior responses
+
+--------------------------------------------------
+Question 4:
+What was the first question I asked you?
+
+Observed Answer:
+"I can only answer factual questions based on the provided policy documents. This system does not retain or reference past interactions."
+
+Improvement:
+- Clear and explicit handling of conversation-history questions
+- Correct stateless system behavior
+
+--------------------------------------------------
+Question 5:
+Are digital products refundable?
+
+Observed Answer:
+"Digital products and downloadable content are non-refundable."
+
+Improvement:
+- Accurate answer grounded strictly in Refund Policy
+- No additional assumptions or explanations
+
+--------------------------------------------------
+Summary of Improvements in Version 2:
+
+- All policy types are consistently retrieved and listed
+- Opinion, feedback, and paraphrasing requests are refused deterministically
+- No reference to past interactions or conversation history
+- Hallucinations eliminated for out-of-scope questions
+- Responses are concise, factual, and easy to evaluate
+
+Conclusion:
+Prompt Version 2 significantly improved reliability, grounding, and determinism. The system now behaves as a strict RAG-based policy assistant aligned with the assignment requirements.
