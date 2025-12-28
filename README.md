@@ -76,19 +76,17 @@ rag-policy-assistant/
 │ └── policies/ # Policy documents (.txt)
 │
 ├── prompts/
-│ ├── prompt_v1_initial.txt
-│ └── prompt_v2_improved.txt
+│ ├── prompt_v1_initial.txt # Initial prompt version
+│ └── prompt_v2_improved.txt # Improved prompt with strict grounding
 │
 ├── responses/
-│ ├── responses_v1_initial.txt
-│ └── responses_v2_improved.txt
+│ ├── responses_v1_initial.txt # System behavior with initial prompt
+│ └── responses_v2_improved.txt # Improved behavior after prompt iteration
 │
 ├── chroma_db/ # Vector store persistence
+│
 └── templates/
 └── index.html # Chat-style UI
-
-yaml
-Copy code
 
 ---
 
@@ -292,3 +290,4 @@ If you want, next I can:
 - Shorten this README for recruiters
 
 You’re in a very strong position now.
+
