@@ -221,7 +221,7 @@ API Docs: http://127.0.0.1:8000/docs
 A temporary public demo is available via ngrok:
 
 🔗 Live Demo:
-https://bit.ly/rag-policy-assistant
+[https://bit.ly/rag-policy-assistant](https://stannous-jacques-dutiable.ngrok-free.dev/)
 
 Note: This demo is served through a temporary tunnel and may change if restarted.
 
@@ -290,4 +290,5 @@ If you want, next I can:
 - Shorten this README for recruiters
 
 You’re in a very strong position now.
+
 
