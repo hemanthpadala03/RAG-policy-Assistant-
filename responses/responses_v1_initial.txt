@@ -1,0 +1,72 @@
+Response Version 1 – Initial System Behavior
+
+This file documents the observed behavior of the system using the initial prompt (Prompt Version 1).
+
+--------------------------------------------------
+Question 1:
+What are the different types of policies you know about?
+
+Observed Answer:
+The system mentioned only:
+- Payment Policy
+- Shipping Policy
+
+Issue:
+- The system failed to list all available policy documents.
+- Cancellation Policy and Refund Policy were missing despite being present in the data.
+
+--------------------------------------------------
+Question 2:
+What do you think about the 24-hour cancellation policy? Isn’t it too short?
+
+Observed Answer:
+The system attempted to justify the policy and provided subjective commentary.
+
+Issue:
+- The model expressed an opinion instead of refusing.
+- This violated the requirement to avoid opinions and feedback.
+
+--------------------------------------------------
+Question 3:
+Can you rephrase your previous answer?
+
+Observed Answer:
+The system paraphrased its earlier response.
+
+Issue:
+- The system referenced and reused a previous response.
+- This indicated unintended conversational memory and paraphrasing behavior.
+
+--------------------------------------------------
+Question 4:
+What was the first question I asked you?
+
+Observed Answer:
+The system attempted to infer or restate a prior user question.
+
+Issue:
+- The system behaved as if it had conversation memory.
+- This is undesirable for a stateless RAG system.
+
+--------------------------------------------------
+Question 5:
+What policies do you know about?
+
+Observed Answer:
+The response varied depending on retrieval and sometimes listed incomplete policy sets.
+
+Issue:
+- Inconsistent policy enumeration.
+- Retrieval and prompt constraints were not strict enough.
+
+--------------------------------------------------
+Summary of Issues in Version 1:
+
+- Partial retrieval and incomplete policy listing
+- Opinionated responses when asked for feedback
+- Paraphrasing and conversational behavior
+- Implicit use of past interaction context
+- Reduced determinism and evaluation difficulty
+
+Conclusion:
+Prompt Version 1 was functional but insufficiently constrained, leading to hallucinations, opinion-based answers, and inconsistent behavior.
