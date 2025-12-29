@@ -1,5 +1,6 @@
 # RAG Policy Assistant  
 **AI Engineer Intern – Prompt Engineering & RAG Mini Project**
+![RAG Policy Assistant Screenshot](https://raw.githubusercontent.com/hemanthpadala03/RAG-policy-Assistant-/main/Images/Screenshot%202025-12-29%20103658.png)
 
 ---
 
@@ -290,5 +291,6 @@ If you want, next I can:
 - Shorten this README for recruiters
 
 You’re in a very strong position now.
+
 
 
